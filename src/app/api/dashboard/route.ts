@@ -48,7 +48,7 @@ export async function GET() {
       data.reportRows = attempts.map((attempt) => ({ userId: attempt.userId, correct: attempt.correct, incorrect: attempt.incorrect, total: attempt.total }));
       const names = await database.collection("users").find({ _id: { $in: attempts.map((attempt) => attempt.userId).filter((id): id is ObjectId => id instanceof ObjectId) } }).toArray();
       const nameMap = new Map(names.map((user) => [user._id.toString(), user.name]));
-      data.reportRows = attempts.map((attempt) => ({ name: nameMap.get(attempt.userId.toString()) ?? "Student", correct: attempt.correct, incorrect: attempt.incorrect, total: attempt.total }));
+      data.reportRows = attempts.map((attempt) => ({ userId: attempt.userId.toString(), name: nameMap.get(attempt.userId.toString()) ?? "Student", correct: attempt.correct, incorrect: attempt.incorrect, total: attempt.total }));
       data.submissions = submissions.map((submission) => ({ id: submission._id.toString(), assignmentId: submission.assignmentId.toString(), fileName: submission.fileName, reviewStatus: submission.reviewStatus ?? null, studentName: submission.student?.name ?? "Student" }));
     }
     return NextResponse.json(data);
